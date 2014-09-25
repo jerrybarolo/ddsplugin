@@ -14,6 +14,18 @@
             <artifactId>tshaplugin</artifactId>
             <version>0.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.rti</groupId>
+            <artifactId>ndds</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rti</groupId>
+            <artifactId>nddsd</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
     </dependencies>
 
 
