@@ -1,0 +1,10 @@
+//File IDL che descrive le strutture di interfaccia per il DDS Plugin
+
+
+struct Track_3D {
+    long    trk_id;
+    float   latitude;
+    float   longitude;
+    long    height;
+    string  trk_name;
+};
