@@ -20,3 +20,9 @@ Finally add the dependencies to your pom.xml:
         <artifactId>nddsd</artifactId>
         <version>5.1.0</version>
     </dependency>
+    
+For compile the IDL write:
+
+"%NDDSHOME%\scripts\rtiddsgen.bat" -package com.next.idlcode -d . -language Java -ppDisable -replace ..\..\TSHA.idl
+
+in src.main.java directory
