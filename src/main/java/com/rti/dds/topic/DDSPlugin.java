@@ -116,7 +116,10 @@ public class DDSPlugin extends APlugin {
 
     @Override
     public void stop() {
-
+        //Rilascio delle risorse
+        participant.delete_contained_entities();
+        DomainParticipantFactory.TheParticipantFactory.
+                delete_participant(participant);
     }
 
     @Override

@@ -54,6 +54,7 @@ public class TestDDSPlugin extends DataReaderAdapter {
         sdw.write(trk, InstanceHandle_t.HANDLE_NIL);
 
         testWait(1000);
+        ddsPlugin.stop();
         //verify
         System.out.println("Assert");
         Assert.assertEquals(trk, trkReceived);
@@ -85,6 +86,7 @@ public class TestDDSPlugin extends DataReaderAdapter {
         eventBus.post(trk);
 
         testWait(1000);
+        ddsPlugin.stop();
         //verify
         //System.out.println("Assert");
         Assert.assertEquals(trk, trkReceived);
