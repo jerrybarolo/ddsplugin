@@ -9,9 +9,8 @@ import com.next.tsha.Track3D_Listener;
 import com.rti.dds.domain.DomainParticipant;
 import com.rti.dds.domain.DomainParticipantFactory;
 import com.rti.dds.domain.DomainParticipantFactoryQos;
-import com.rti.dds.infrastructure.*;
-import com.rti.dds.publication.DataWriterQos;
-import com.rti.dds.subscription.DataReaderQos;
+import com.rti.dds.infrastructure.InstanceHandle_t;
+import com.rti.dds.infrastructure.StatusKind;
 import common.APlugin;
 
 import java.util.HashMap;
@@ -65,80 +64,48 @@ public class DDSPlugin extends APlugin {
     }
 
     private void createTrack_3D_DataReaderWriter() throws Exception {
-        // Create the topic "Track3D_Topic" for the Track3D type
-        TopicQos qos = new TopicQos();
-        participant.get_default_topic_qos(qos);
-        qos.durability.kind = DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
-        qos.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
-        qos.history.kind = HistoryQosPolicyKind.KEEP_ALL_HISTORY_QOS;
 
-        Topic topicReader = participant.create_topic(
+        // Create the topic "Track3D_Topic" for the Track3D type
+        Topic topicReader = participant.create_topic_with_profile(
                 "Track3D_TopicToPlugin",
                 Track_3DTypeSupport.get_type_name(),
-                qos,
+                "Track3D_QosLibrary",
+                "Track3D_Profile",
                 null, // listener
                 StatusKind.STATUS_MASK_NONE);
         if (topicReader == null) {
             throw new Exception("Unable to create topic Reader.");
         }
-        TopicQos qos2 = new TopicQos();
-        topicReader.get_qos(qos2);
 
-        // Create the data writer using the default publisher
-        DataReaderQos qosReader = new DataReaderQos();
-        participant.get_default_datareader_qos(qosReader);
-        qosReader.durability.kind = DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
-        qosReader.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
-        qosReader.history.kind = HistoryQosPolicyKind.KEEP_ALL_HISTORY_QOS;
+        // Create Datawriter using xml QoS file
+        m_3Ddr = (Track_3DDataReader) participant.create_datareader_with_profile(
+                topicReader, "Track3D_QosLibrary",
+                "Track3D_Profile",
+                new Track3D_Listener(this.configuration.getEventBus()), StatusKind.DATA_AVAILABLE_STATUS);
 
-        // Create the data reader using the default subscriber
-        m_3Ddr = (Track_3DDataReader) participant.create_datareader(
-                topicReader,
-                qosReader,
-                new Track3D_Listener(this.configuration.getEventBus()),         // Listener
-                StatusKind.DATA_AVAILABLE_STATUS);
         if (m_3Ddr == null) {
-            throw new Exception("Unable to create DDS Data Reader");
+            throw new Exception("Unable to create DDS Track_3DDataReader");
         }
-        DataReaderQos qosReader2 = new DataReaderQos();
-        m_3Ddr.get_qos(qosReader2);
 
-        TopicQos qosTw = new TopicQos();
-        participant.get_default_topic_qos(qosTw);
-        qosTw.durability.kind = DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
-        qosTw.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
-        qosTw.history.kind = HistoryQosPolicyKind.KEEP_ALL_HISTORY_QOS;
-
-        Topic topicWriter = participant.create_topic(
+        Topic topicWriter = participant.create_topic_with_profile(
                 "Track3D_TopicFromPlugin",
                 Track_3DTypeSupport.get_type_name(),
-                qosTw,
+                "Track3D_QosLibrary",
+                "Track3D_Profile",
                 null, // listener
                 StatusKind.STATUS_MASK_NONE);
         if (topicWriter == null) {
             throw new Exception("Unable to create topic Writer.");
         }
-        TopicQos qosTw2 = new TopicQos();
-        topicWriter.get_qos(qosTw2);
 
-        // Create the data writer using the default publisher
-        DataWriterQos qosWriter = new DataWriterQos();
-        participant.get_default_datawriter_qos(qosWriter);
-        qosWriter.durability.kind = DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
-        qosWriter.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
-        qosWriter.history.kind = HistoryQosPolicyKind.KEEP_ALL_HISTORY_QOS;
-
-        // Create the data reader using the default publisher
+        // Create Dta reader using xml QoS file
         m_3Ddw = (Track_3DDataWriter) participant.create_datawriter_with_profile(
                 topicWriter, "Track3D_QosLibrary",
                 "Track3D_Profile",
                 null /* listener */, StatusKind.STATUS_MASK_NONE);
 
-        DataWriterQos t = new DataWriterQos();
-        m_3Ddw.get_qos(t);
-
         if (m_3Ddw == null) {
-            throw new Exception("Unable to create DDS Data Writer");
+            throw new Exception("Unable to create DDS Track_3DDataWriter");
         }
     }
 

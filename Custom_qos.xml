@@ -29,6 +29,18 @@
                 </participant_name>
             </participant_qos>
 
+            <topic_qos>
+            <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>
+                <durability>
+                    <kind>TRANSIENT_LOCAL_DURABILITY_QOS</kind>
+                </durability>
+                <history>
+                    <kind>KEEP_ALL_HISTORY_QOS</kind>
+                </history>
+            </topic_qos>
+
             <datawriter_qos>
                 <reliability>
                     <kind>RELIABLE_RELIABILITY_QOS</kind>
